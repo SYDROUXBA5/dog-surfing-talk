@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dog Surfing Cartoon</title>
+<style>
+:root{
+  --ink:#161616; --ink-2:#3A3A3A;
+  --sun:#FFD23F; --red:#F2542D; --blue:#2F80ED; --blue-2:#8FD3FE; --cream:#FFF8EC;
+  --green:#2EBD59; --orange:#FF9F1C; --pink:#FF6F91;
+  --pop:cubic-bezier(.34,1.7,.5,1); --ease:cubic-bezier(.2,.8,.2,1);
+  --disp:"Arial Rounded MT Bold","Arial Black","Segoe UI Black",system-ui,sans-serif;
+  --body:"Avenir Next",Avenir,"Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#111}
+body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased;user-select:none}
+#viewport{position:fixed;inset:0;cursor:pointer}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;overflow:hidden;transform-origin:center;
+  background:linear-gradient(#55BFF0 0%,#9FDCF8 55%,#DDF4FF 100%)}
+
+/* ---------- sky ---------- */
+#clouds{position:absolute;inset:0;width:1920px;height:1080px;z-index:0;pointer-events:none}
+.cloud{animation:cloud 90s linear infinite}
+@keyframes cloud{from{transform:translateX(-360px)}to{transform:translateX(2160px)}}
+.cloud{fill:#fff;stroke:#161616;stroke-width:5;stroke-linejoin:round}
+
+/* ---------- slides ---------- */
+.slide{position:absolute;inset:0;z-index:1;padding:110px 150px 190px;visibility:hidden}
+.slide.active{visibility:visible}
+.notes{display:none}
+
+/* iris wipe between slides */
+#iris{position:absolute;left:var(--ix,960px);top:var(--iy,540px);width:var(--is,0px);height:var(--is,0px);z-index:40;pointer-events:none;
+  border-radius:50%;box-shadow:0 0 0 6000px #111;transform:translate(-50%,-50%);transition-property:width,height}
+#theEnd{position:absolute;z-index:41;transform:translate(-50%,-50%) scale(.3);opacity:0;pointer-events:none;
+  font:96px/1 "Marker Felt",var(--disp);color:#fff;transition:transform .6s var(--pop),opacity .3s}
+#theEnd.show{opacity:1;transform:translate(-50%,-50%)}
+
+/* pop in on slide entry */
+.a{opacity:0}
+.slide.active .a{animation:popin .65s var(--pop) both;animation-delay:calc(var(--d,0s) + .25s)}
+@keyframes popin{from{opacity:0;transform:scale(.3) rotate(-8deg)}to{opacity:1;transform:rotate(var(--tilt,0deg))}}
+/* click/arrow builds: boing */
+.f{opacity:0;transform:scale(.25) rotate(-10deg);transition:transform .6s var(--pop),opacity .18s linear}
+.f.in{opacity:1;transform:rotate(var(--tilt,0deg))}
+
+/* ---------- type ---------- */
+.kicker{display:inline-block;font:30px/1 var(--disp);letter-spacing:.08em;text-transform:uppercase;background:var(--sun);
+  border:5px solid var(--ink);border-radius:14px;padding:10px 22px 8px;box-shadow:6px 6px 0 var(--ink);--tilt:-2deg}
+h1,h2{font-family:var(--disp);font-weight:400;color:#fff;-webkit-text-stroke:16px var(--ink);paint-order:stroke fill;letter-spacing:.01em}
+h2{font-size:98px;line-height:1.05;margin-top:24px;text-shadow:8px 8px 0 var(--ink)}
+h1{font-size:124px;line-height:1.02;margin-top:26px;color:var(--sun);-webkit-text-stroke:18px var(--ink);text-shadow:10px 10px 0 var(--red)}
+.w{display:inline-block;white-space:nowrap}
+.ch{display:inline-block}
+.slide.active h1 .ch,.slide.active h2 .ch{animation:drop .7s var(--pop) both,wiggle 7s ease-in-out infinite;animation-delay:calc(.12s + var(--i) * 30ms),calc(2.4s + var(--i) * 45ms)}
+@keyframes drop{0%{opacity:0;transform:translateY(-170px) scale(.5) rotate(-25deg)}55%{opacity:1}100%{opacity:1;transform:none}}
+.pts{list-style:none;margin-top:56px}
+.pts li{position:relative;font:50px/1.22 var(--disp);padding-left:72px;margin-bottom:30px;transform-origin:24px 50%}
+.pts li::before{content:"";position:absolute;left:0;top:.2em;width:40px;height:40px;border-radius:50%;background:var(--sun);border:5px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.pts li:nth-child(2)::before{background:var(--red)}
+.pts li:nth-child(3)::before{background:var(--blue-2)}
+.pts li:nth-child(4)::before{background:var(--green)}
+.card{background:#fff;border:6px solid var(--ink);border-radius:28px;box-shadow:12px 12px 0 var(--ink)}
+.cols{display:grid;grid-template-columns:1fr 760px;gap:70px;align-items:center;margin-top:30px}
+
+/* ---------- sea band ---------- */
+#sea{position:absolute;left:0;bottom:0;width:1920px;height:160px;z-index:2;pointer-events:none;overflow:visible}
+#sea path{stroke:var(--ink);stroke-width:5;stroke-linejoin:round}
+#waveBack{fill:var(--blue-2);animation:drift480 11s linear infinite}
+#waveFront{fill:var(--blue);animation:drift640 7s linear infinite}
+@keyframes drift480{to{transform:translateX(-480px)}}
+@keyframes drift640{to{transform:translateX(-640px)}}
+#counter{position:absolute;right:150px;bottom:30px;z-index:3;font:30px/1 var(--disp);color:#fff;-webkit-text-stroke:8px var(--ink);paint-order:stroke fill;font-variant-numeric:tabular-nums}
+#progress{position:absolute;left:0;bottom:0;height:12px;width:0;z-index:3;background:var(--sun);border-top:4px solid var(--ink);border-right:4px solid var(--ink);transition:width .6s var(--pop)}
+
+/* ---------- surfing scene ---------- */
+.scene{overflow:visible}
+.slide:not(.active) .scene,.slide:not(.active) .scene *{animation-play-state:paused}
+.rays{transform-box:fill-box;transform-origin:center;animation:spin 30s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gull{animation:gull 8s ease-in-out infinite alternate}
+@keyframes gull{to{transform:translate(-40px,14px)}}
+.gull path{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;transform-box:fill-box;transform-origin:50% 100%;animation:flap .4s ease-in-out infinite alternate}
+@keyframes flap{to{transform:scaleY(.4)}}
+.foam{transform-box:fill-box;transform-origin:center;animation:foam .9s ease-in-out infinite alternate}
+@keyframes foam{to{transform:scale(1.18) translateY(-3px)}}
+.mark{animation:mark 1.4s ease-in-out infinite alternate}
+@keyframes mark{to{transform:translate(16px,9px)}}
+/* the 6.5s stunt loop: ride, crouch, backflip, SPLASH, ride on */
+.air{transform-box:view-box;transform-origin:262px 170px;animation:air 6.5s infinite}
+@keyframes air{
+  0%{transform:translate(-24px,0) rotate(0deg);animation-timing-function:ease-in-out}
+  22%{transform:translate(24px,0) rotate(0deg);animation-timing-function:ease-in-out}
+  40%{transform:translate(0,0) rotate(0deg);animation-timing-function:ease-in-out}
+  48%{transform:translate(10px,8px) rotate(4deg);animation-timing-function:cubic-bezier(.2,.7,.4,1)}
+  60%{transform:translate(-260px,-190px) rotate(-180deg);animation-timing-function:cubic-bezier(.6,0,.8,.4)}
+  72%{transform:translate(-70px,0) rotate(-360deg);animation-timing-function:ease-out}
+  86%{transform:translate(-40px,0) rotate(-360deg);animation-timing-function:ease-in-out}
+  100%{transform:translate(-24px,0) rotate(-360deg)}}
+.squash{transform-box:view-box;transform-origin:262px 286px;animation:squash 6.5s infinite}
+@keyframes squash{
+  0%,44%{transform:scale(1,1)} 48%{transform:scale(1.14,.8)} 53%{transform:scale(.88,1.16)} 58%{transform:scale(1,1)}
+  70%{transform:scale(.92,1.1)} 73%{transform:scale(1.22,.76)} 78%{transform:scale(.96,1.05)} 82%,100%{transform:scale(1,1)}}
+.trail{animation:trail 6.5s linear infinite}
+@keyframes trail{0%,45%{opacity:1}49%,72%{opacity:0}76%,100%{opacity:1}}
+.splash{transform-box:fill-box;transform-origin:center;opacity:0;animation:splash 6.5s linear infinite}
+@keyframes splash{0%,70%{opacity:0;transform:scale(.2)}74%{opacity:1;transform:scale(1.15)}79%{transform:scale(.95)}82%{transform:scale(1)}90%{opacity:1;transform:scale(1.02)}95%,100%{opacity:0;transform:scale(1.2)}}
+.whee{transform-box:fill-box;transform-origin:center;opacity:0;animation:whee 6.5s linear infinite}
+@keyframes whee{0%,51%{opacity:0;transform:scale(.2) rotate(-10deg)}55%{opacity:1;transform:scale(1.1)}58%,66%{opacity:1;transform:scale(1)}70%,100%{opacity:0;transform:scale(.6)}}
+.spray-sheet{transform-box:fill-box;transform-origin:100% 100%;animation:sheet .4s ease-in-out infinite alternate}
+@keyframes sheet{from{transform:scale(.7,.55)}to{transform:scale(1,1)}}
+.drop{transform-box:fill-box;transform-origin:center;opacity:0;animation:fly 1s ease-out infinite}
+@keyframes fly{0%{transform:translate(0,0) scale(1);opacity:0}15%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.35);opacity:0}}
+.speed path{stroke-dasharray:140 400;animation:speed .7s linear infinite}
+@keyframes speed{from{stroke-dashoffset:140}to{stroke-dashoffset:-140}}
+/* the dog's own moving parts */
+.dog-live .d-ear,.dog-live .d-ear-far{transform-box:fill-box;transform-origin:95% 70%;animation:ear .18s ease-in-out infinite alternate}
+.dog-live .d-ear-far{animation-delay:-.09s}
+@keyframes ear{from{transform:rotate(5deg) skewX(4deg)}to{transform:rotate(-9deg) skewX(-6deg)}}
+.dog-live .d-tongue{transform-box:fill-box;transform-origin:95% 0%;animation:tongue .16s ease-in-out infinite alternate}
+@keyframes tongue{from{transform:rotate(-8deg)}to{transform:rotate(12deg) scaleX(1.08)}}
+.dog-live .d-tail{transform-box:fill-box;transform-origin:100% 100%;animation:wag .22s ease-in-out infinite alternate}
+@keyframes wag{from{transform:rotate(-18deg)}to{transform:rotate(14deg)}}
+.dog-live .d-head{transform-box:fill-box;transform-origin:25% 85%;animation:headbob .9s ease-in-out infinite alternate}
+@keyframes headbob{from{transform:rotate(-3deg)}to{transform:rotate(4deg) translateY(-3px)}}
+.dog-live .d-eyes{transform-box:fill-box;transform-origin:50% 55%;animation:blink 3.4s infinite}
+@keyframes blink{0%,90%,100%{transform:scaleY(1)}94%{transform:scaleY(.08)}}
+/* iris-out ending: dog holds a riding pose */
+.ending .scene .air,.ending .scene .squash,.ending .scene .trail{animation:none}
+.ending .scene .splash,.ending .scene .whee{animation:none;opacity:0}
+
+/* ---------- 1 · title ---------- */
+.title-text{position:absolute;left:150px;top:150px;width:1000px;z-index:1}
+.sub{display:inline-block;font:600 38px/1.3 var(--body);background:#fff;border:5px solid var(--ink);border-radius:26px;
+  padding:16px 28px;box-shadow:8px 8px 0 var(--ink);margin-top:36px;max-width:700px;--tilt:1deg}
+.chips{display:flex;flex-wrap:wrap;gap:16px;margin-top:40px;list-style:none;max-width:760px}
+.chips li{font:28px/1 var(--disp);padding:12px 24px;border:4px solid var(--ink);border-radius:999px;box-shadow:4px 4px 0 var(--ink);background:var(--sun)}
+.chips li:nth-child(2){background:var(--blue-2)}.chips li:nth-child(3){background:#FFB38A}.chips li:nth-child(4){background:#9EE6A8}.chips li:nth-child(5){background:#FF9CB6}
+.title-art{position:absolute;right:0;bottom:0;width:1120px}
+
+/* ---------- 2 · modes ---------- */
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:50px}
+.mode{padding:22px 30px 30px}
+.modes .mode:nth-child(1){--tilt:-1.5deg}.modes .mode:nth-child(2){--tilt:1deg}.modes .mode:nth-child(3){--tilt:-.6deg}
+.mode svg{display:block;width:100%;height:190px}
+.mode figcaption{font-size:33px;line-height:1.3;font-weight:600;color:var(--ink-2);margin-top:12px}
+.mode b{display:block;font:50px/1.1 var(--disp);color:var(--ink);margin-bottom:4px}
+.tagline{display:inline-block;margin-top:46px;font:44px/1.2 var(--disp);background:var(--sun);border:5px solid var(--ink);border-radius:18px;padding:12px 26px;box-shadow:7px 7px 0 var(--ink);--tilt:-1deg}
+
+/* ---------- 3 · timeline ---------- */
+.timeline{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:60px;margin-top:110px}
+.tl-line{position:absolute;left:24px;right:0;top:21px;height:10px;border-radius:5px;background:var(--ink);transform:scaleX(0);transform-origin:left}
+.slide.active .tl-line{animation:draw 1s var(--ease) .4s both}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.tl-dot{display:block;position:relative;width:52px;height:52px;border-radius:50%;background:var(--red);border:6px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.timeline .f:nth-child(3) .tl-dot{background:var(--sun)}.timeline .f:nth-child(4) .tl-dot{background:var(--green)}
+.tl-year{font:62px/1.1 var(--disp);margin-top:30px}
+.tl-text{font-size:40px;line-height:1.3;font-weight:600;color:var(--ink-2);margin-top:12px;max-width:470px}
+
+/* ---------- 4 · size scale ---------- */
+.scale svg{display:block;width:100%}
+.scale-cap{font:34px/1.2 var(--disp);text-align:center;margin-top:18px}
+
+/* ---------- 5 · gear ---------- */
+.gear{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:56px}
+.gear .card{display:flex;align-items:center;gap:34px;padding:28px 40px}
+.gear .card:nth-child(1){--tilt:-1deg}.gear .card:nth-child(2){--tilt:1deg}.gear .card:nth-child(3){--tilt:.8deg}.gear .card:nth-child(4){--tilt:-1.2deg}
+.gear svg{flex:none;width:128px;height:128px}
+.gear b{display:block;font:46px/1.15 var(--disp)}
+.gear span{display:block;font-size:34px;font-weight:600;color:var(--ink-2);margin-top:6px}
+
+/* ---------- 6 · ladder ---------- */
+.ladder{display:flex;align-items:flex-end;gap:28px;height:520px;margin-top:40px}
+.step{flex:1;padding:24px 24px;border:6px solid var(--ink);border-radius:24px;box-shadow:10px 10px 0 var(--ink);transform-origin:50% 100%}
+.step.f{transform:scale(1,.1)}
+.step.f.in{transform:none}
+.step:nth-child(1){height:240px;background:#FFE27A}.step:nth-child(2){height:305px;background:#FFC48A}.step:nth-child(3){height:370px;background:#FF9C8A}
+.step:nth-child(4){height:435px;background:#9FD8FF}.step:nth-child(5){height:500px;background:#9EE6A8}
+.step .n{font:72px/1 var(--disp);color:#fff;-webkit-text-stroke:12px var(--ink);paint-order:stroke fill}
+.step p{font:36px/1.2 var(--disp);margin-top:12px}
+
+/* ---------- 7 · judging ---------- */
+.lead{font-size:38px;font-weight:600;color:var(--ink-2);margin-top:40px}
+.lead + .pts{margin-top:26px}
+.divs{padding:36px 42px 44px;--tilt:1.5deg}
+.divs h3{font:36px/1 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.divs span{display:block;font:44px/1 var(--disp);padding:16px 28px;border:5px solid var(--ink);border-radius:999px;box-shadow:5px 5px 0 var(--ink);margin-top:22px;background:var(--sun)}
+.divs span:nth-of-type(2){background:var(--blue-2)}.divs span:nth-of-type(3){background:#FFB38A}
+
+/* ---------- 8 · safety ---------- */
+.signs{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:50px}
+.sign{padding:30px 44px 38px}
+.signs .sign:nth-child(1){--tilt:-1deg}.signs .sign:nth-child(2){--tilt:1deg}
+.sign h3{display:inline-block;font:44px/1 var(--disp);color:#fff;-webkit-text-stroke:10px var(--ink);paint-order:stroke fill;background:var(--green);
+  border:5px solid var(--ink);border-radius:999px;padding:10px 30px 8px;box-shadow:5px 5px 0 var(--ink)}
+.sign.stop h3{background:var(--red)}
+.sign ul{list-style:none;margin-top:8px}
+.sign li{position:relative;font:38px/1.3 var(--disp);margin-top:18px;padding-left:52px}
+.sign li::before{content:"";position:absolute;left:0;top:.18em;width:30px;height:30px;border-radius:50%;background:var(--green);border:4px solid var(--ink)}
+.sign.stop li::before{background:var(--red);border-radius:6px}
+.rules{display:flex;flex-wrap:wrap;gap:18px;margin-top:44px}
+.rules span{font:36px/1 var(--disp);padding:14px 28px;border:5px solid var(--ink);border-radius:999px;box-shadow:5px 5px 0 var(--ink);background:#fff}
+.rules span:nth-child(1){background:var(--blue-2)}.rules span:nth-child(2){background:#FFB38A}.rules span:nth-child(3){background:#FFE27A}.rules span:nth-child(4){background:#9EE6A8}
+
+/* ---------- 9 · close ---------- */
+.end-text{max-width:960px}
+.finale{font:150px/1 var(--disp);color:var(--sun);-webkit-text-stroke:20px var(--ink);paint-order:stroke fill;text-shadow:10px 10px 0 var(--red);margin-top:24px;transform:none}
+.finale.f{transform:none;transition:opacity .1s}
+.finale.in .ch{animation:drop .7s var(--pop) both;animation-delay:calc(var(--i) * 45ms)}
+.finale.in .w{animation:wobble 1.4s ease-in-out .8s infinite alternate}
+@keyframes wobble{from{transform:rotate(-3deg)}to{transform:rotate(3deg) translateY(-6px)}}
+.end-art{position:absolute;right:0;bottom:0;width:1000px}
+
+/* ---------- extra motion ---------- */
+@keyframes bob{from{transform:translateY(0) rotate(-1.5deg)}to{transform:translateY(-10px) rotate(1.5deg)}}
+@keyframes idlebob{to{transform:translateY(-5px)}}
+@keyframes wiggle{0%,7%,100%{transform:none}3.5%{transform:translateY(-16px) rotate(-5deg)}}
+@keyframes swing{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
+@keyframes floaty{from{transform:rotate(1deg)}to{transform:rotate(-.5deg) translateY(-6px)}}
+@keyframes jiggle{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg) translateY(-3px)}}
+@keyframes hopwave{0%,60%,100%{transform:none}70%{transform:translateY(-14px)}80%{transform:translateY(0) scale(1.06,.92)}}
+@keyframes bbounce{0%,64%,100%{transform:none}74%{transform:translateY(-14px)}84%{transform:scale(1.18,.82)}92%{transform:none}}
+@keyframes cardwave{to{transform:translateX(-60px)}}
+.slide.active .kicker{animation:popin .65s var(--pop) .25s both,swing 2.6s ease-in-out 1.2s infinite alternate}
+.slide.active .sub{animation:popin .65s var(--pop) .8s both,floaty 3s ease-in-out 1.6s infinite alternate}
+.slide.active .chips li{animation:hopwave 3.2s ease-in-out 1.4s infinite}
+.chips li:nth-child(2){animation-delay:1.55s!important}.chips li:nth-child(3){animation-delay:1.7s!important}.chips li:nth-child(4){animation-delay:1.85s!important}.chips li:nth-child(5){animation-delay:2s!important}
+.pts li.in::before{animation:bbounce 3s ease-in-out infinite}
+.pts li:nth-child(2).in::before{animation-delay:.25s}.pts li:nth-child(3).in::before{animation-delay:.5s}.pts li:nth-child(4).in::before{animation-delay:.75s}
+.cardwave,.scalewave{animation:cardwave 2.2s linear infinite}
+.mode svg .bob{transform-box:fill-box;transform-origin:50% 100%;animation:bob 1.3s ease-in-out infinite alternate}
+.modes .mode:nth-child(2) svg .bob{animation-delay:-.4s}.modes .mode:nth-child(3) svg .bob{animation-delay:-.8s}
+.scale svg use{transform-box:fill-box;transform-origin:50% 100%;animation:bob 1.1s ease-in-out infinite alternate}
+.scale svg use:nth-of-type(2){animation-delay:-.25s}.scale svg use:nth-of-type(3){animation-delay:-.5s}.scale svg use:nth-of-type(4){animation-delay:-.75s}
+/* gear icons come alive */
+.gear .card:nth-child(1) svg{transform-origin:50% 12%;animation:swing2 1.4s ease-in-out infinite alternate}
+@keyframes swing2{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+.gear .card:nth-child(2) svg{animation:rock 1.8s ease-in-out infinite alternate}
+@keyframes rock{from{transform:rotate(-10deg) translateY(4px)}to{transform:rotate(8deg) translateY(-4px)}}
+.gear .card:nth-child(3) svg{transform-origin:50% 100%;animation:drip 1.6s ease-in-out infinite}
+@keyframes drip{0%,100%{transform:none}30%{transform:translateY(-16px) scale(.94,1.06)}55%{transform:translateY(0) scale(1.12,.88)}70%{transform:none}}
+.gear .card:nth-child(4) svg{animation:sunsway 2.2s ease-in-out infinite alternate}
+@keyframes sunsway{from{transform:rotate(-14deg)}to{transform:rotate(14deg) scale(1.08)}}
+/* pup that runs the timeline and hops up the training steps */
+.ladder{position:relative}
+.hopper,.runner{position:absolute;left:0;width:150px;height:102px;pointer-events:none;opacity:0;z-index:2;transition:transform .55s ease-in-out,opacity .25s}
+.hopper.on,.runner.on{opacity:1}
+.hopper{bottom:0;transform:translateX(calc(76px + (var(--built,0) - 1) * 329.6px))}
+.hopper .hy{transform:translateY(calc(-240px - (var(--built,0) - 1) * 65px));transition:transform .55s ease-in-out}
+.runner{top:-102px;transform:translateX(calc(-49px + (var(--built,0) - 1) * 560px));transition-duration:.7s}
+.runner .hy{animation:trot .3s ease-in-out infinite alternate}
+@keyframes trot{to{transform:translateY(-6px)}}
+.hj{transform-origin:50% 100%}
+.hop .hj{animation:hopjump .6s ease-out}
+@keyframes hopjump{0%{transform:scale(1.15,.8)}15%{transform:scale(.9,1.12)}50%{transform:translateY(-110px) rotate(-8deg)}85%{transform:translateY(0) scale(1.18,.82)}100%{transform:none}}
+.hb{animation:idlebob 1s ease-in-out infinite alternate}
+.hopper svg,.runner svg{display:block;overflow:visible}
+/* judging, safety */
+.divs.in span{animation:jiggle 1.8s ease-in-out infinite}
+.divs.in span:nth-of-type(2){animation-delay:-.6s}.divs.in span:nth-of-type(3){animation-delay:-1.2s}
+.sign.stop.in{animation:shake .55s ease-in-out .35s}
+@keyframes shake{0%,100%{transform:rotate(var(--tilt))}20%{transform:translateX(-12px) rotate(-2deg)}40%{transform:translateX(12px) rotate(3deg)}60%{transform:translateX(-8px)}80%{transform:translateX(5px)}}
+.sign.stop.in h3{animation:pulse .8s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:scale(1.08);box-shadow:5px 5px 0 var(--ink),0 0 0 12px rgba(242,84,45,.28)}}
+.sign.stop.in li::before{animation:shiver .12s linear infinite alternate}
+@keyframes shiver{from{transform:translateX(-2px) rotate(-6deg)}to{transform:translateX(2px) rotate(6deg)}}
+.sign:not(.stop).in li::before{animation:nod 1.4s ease-in-out infinite}
+.sign:not(.stop).in li:nth-child(2)::before{animation-delay:.2s}.sign:not(.stop).in li:nth-child(3)::before{animation-delay:.4s}
+@keyframes nod{0%,60%,100%{transform:none}75%{transform:translateY(-9px)}}
+.rules.in span{animation:hopwave 3s ease-in-out infinite}
+.rules.in span:nth-child(2){animation-delay:.2s}.rules.in span:nth-child(3){animation-delay:.4s}.rules.in span:nth-child(4){animation-delay:.6s}
+/* confetti on "Surf's up!" */
+.end-text{position:relative}
+.confetti{position:absolute;left:330px;bottom:80px;width:0;height:0;pointer-events:none;z-index:3}
+.confetti i{position:absolute;left:0;top:0;width:18px;height:28px;border:3px solid var(--ink);border-radius:4px;opacity:0}
+.end-text:has(.finale.in) .confetti i{animation:confetti 1.9s cubic-bezier(.2,.7,.4,1) var(--dl) forwards}
+@keyframes confetti{0%{opacity:1;transform:translate(0,0) rotate(0) scale(.4)}50%{opacity:1;transform:translate(calc(var(--x) * .6),calc(var(--y) * .6 - 140px)) rotate(calc(var(--r) * .5)) scale(1)}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 260px)) rotate(var(--r)) scale(1)}}
+/* running gags: pup surfing the bottom waves, a gull, a leaping fish, a blinking sun */
+.band-rider{animation:bandride 22s linear infinite}
+@keyframes bandride{0%{transform:translate(2240px,62px)}65%,100%{transform:translate(-420px,62px)}}
+.band-bob{animation:bandbob .8s ease-in-out infinite alternate}
+@keyframes bandbob{from{transform:translateY(0) rotate(1deg)}to{transform:translateY(-3px) rotate(-2.5deg)}}
+.ww{transform-box:fill-box;transform-origin:center;animation:foam .6s ease-in-out infinite alternate}
+#stage[data-slide="0"] .band-rider,#stage[data-slide="8"] .band-rider{display:none}
+.gullx{animation:gullx 28s linear infinite}
+@keyframes gullx{0%{transform:translate(2000px,240px)}55%,100%{transform:translate(-140px,150px)}}
+.sun-eyes{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
+.fish-o{opacity:0;animation:fishfade 7s linear infinite}
+@keyframes fishfade{0%,4.5%{opacity:0}5.5%,16.5%{opacity:1}17.5%,100%{opacity:0}}
+.fish{animation:fishjump 7s linear infinite}
+@keyframes fishjump{0%{transform:translate(0,30px) rotate(-60deg)}11%{transform:translate(55px,-125px) rotate(0deg)}19%,100%{transform:translate(110px,10px) rotate(60deg)}}
+
+/* ---------- presenter aids ---------- */
+body.rehearse .slide .vf::after{content:"⚑";color:var(--red);font-size:.6em;vertical-align:super;margin-left:6px;-webkit-text-stroke:0}
+body.blank #stage::after{content:"";position:absolute;inset:0;background:#000;z-index:50}
+body.still *,body.still *::before,body.still *::after{animation-play-state:paused!important}
+#hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:20;padding:10px 20px;border-radius:999px;background:rgba(17,17,17,.9);color:#fff;font:15px/1.4 var(--body);
+  width:max-content;max-width:calc(100vw - 32px);text-align:center;opacity:0;pointer-events:none;transition:opacity .4s}
+#hint.show{opacity:1}
+body.rehearse #hint{opacity:0}
+#np{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:170px 1fr 240px;gap:28px;max-height:42vh;padding:16px 28px 18px;
+  background:rgba(14,14,14,.96);color:#F2F2F2;font:17px/1.45 var(--body);transform:translateY(105%);transition:transform .35s var(--ease);cursor:default}
+body.rehearse #np{transform:none}
+#np .lab{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A9A9A9}
+#npClock{font-size:36px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+#npClock.late{color:#FF8A70}
+#npWin{font-weight:600;font-variant-numeric:tabular-nums;margin-bottom:8px}
+#npNotes{overflow:auto}
+#npNotes ul{padding-left:1.1em}
+#npNotes li{margin-bottom:.35em}
+#npNotes li.vf{color:#FFB199}
+#npNext{color:#CFCFCF}
+#toast{position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:40;padding:10px 20px;border-radius:12px;background:var(--red);color:#fff;font:15px/1.4 var(--body);opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- shared drawings -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="waveGradC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4FA3F7"/><stop offset=".45" stop-color="#2F80ED"/><stop offset="1" stop-color="#1D5FC2"/>
+    </linearGradient>
+    <!-- cartoon pup in a life jacket, facing right, feet on the bottom edge -->
+    <symbol id="dog" viewBox="0 0 440 300">
+      <g fill="none" stroke-linecap="round">
+        <path d="M134 226 L126 268" stroke="#161616" stroke-width="32"/><path d="M134 226 L126 268" stroke="#C98A4A" stroke-width="20"/>
+        <path d="M270 228 L278 268" stroke="#161616" stroke-width="32"/><path d="M270 228 L278 268" stroke="#C98A4A" stroke-width="20"/>
+      </g>
+      <ellipse cx="130" cy="278" rx="24" ry="13" fill="#EBD9C0" stroke="#161616" stroke-width="6"/>
+      <ellipse cx="290" cy="278" rx="24" ry="13" fill="#EBD9C0" stroke="#161616" stroke-width="6"/>
+      <g class="d-tail">
+        <path d="M98 184 C74 170 60 146 64 118" fill="none" stroke="#161616" stroke-width="28" stroke-linecap="round"/>
+        <path d="M98 184 C74 170 60 146 64 118" fill="none" stroke="#E3A55B" stroke-width="16" stroke-linecap="round"/>
+        <circle cx="64" cy="112" r="15" fill="#FFF8EC" stroke="#161616" stroke-width="6"/>
+      </g>
+      <path d="M96 204 C84 166 114 144 164 146 C214 148 254 142 284 152 C314 162 322 198 304 220 C288 238 254 240 204 240 C154 240 104 240 96 204 Z" fill="#E3A55B" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M152 147 C146 180 150 216 160 240 L272 240 C286 212 288 178 280 151 C240 144 194 144 152 147 Z" fill="#F2542D" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M156 196 C194 201 242 201 282 194" fill="none" stroke="#161616" stroke-width="20" stroke-linecap="round"/>
+      <path d="M156 196 C194 201 242 201 282 194" fill="none" stroke="#FFD23F" stroke-width="9" stroke-linecap="round"/>
+      <path d="M196 147 C200 114 236 114 242 147" fill="none" stroke="#161616" stroke-width="17" stroke-linecap="round"/>
+      <path d="M196 147 C200 114 236 114 242 147" fill="none" stroke="#FFD23F" stroke-width="7" stroke-linecap="round"/>
+      <g fill="none" stroke-linecap="round">
+        <path d="M156 226 L150 270" stroke="#161616" stroke-width="34"/><path d="M156 226 L150 270" stroke="#E3A55B" stroke-width="22"/>
+        <path d="M296 224 L306 270" stroke="#161616" stroke-width="34"/><path d="M296 224 L306 270" stroke="#E3A55B" stroke-width="22"/>
+      </g>
+      <ellipse cx="156" cy="282" rx="26" ry="14" fill="#FFF8EC" stroke="#161616" stroke-width="6"/>
+      <ellipse cx="318" cy="282" rx="26" ry="14" fill="#FFF8EC" stroke="#161616" stroke-width="6"/>
+      <g class="d-head">
+        <path class="d-ear-far" d="M288 60 C262 34 230 24 200 32 C188 36 190 50 202 50 C232 48 262 60 284 80 Z" fill="#7A4522" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+        <ellipse cx="318" cy="94" rx="64" ry="58" fill="#E3A55B" stroke="#161616" stroke-width="6"/>
+        <path d="M304 40 Q310 22 322 32 Q328 16 342 32" fill="none" stroke="#161616" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <ellipse cx="374" cy="124" rx="48" ry="34" fill="#FFF8EC" stroke="#161616" stroke-width="6"/>
+        <path class="d-ear" d="M300 70 C270 46 232 42 198 56 C186 62 188 76 200 77 C234 74 266 84 294 104 Z" fill="#9A5B2E" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M338 132 C352 160 392 162 414 128 C394 140 360 142 338 132 Z" fill="#7A1F1F" stroke="#161616" stroke-width="5" stroke-linejoin="round"/>
+        <g class="d-tongue">
+          <path d="M352 146 C338 168 312 176 290 170 C296 158 322 150 348 140 Z" fill="#FF6F91" stroke="#161616" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M342 150 C328 160 312 164 300 165" fill="none" stroke="#D94A6E" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <ellipse cx="414" cy="108" rx="18" ry="14" fill="#161616"/>
+        <ellipse cx="409" cy="103" rx="6" ry="3.5" fill="#fff" opacity=".85"/>
+        <g class="d-eyes">
+          <ellipse cx="330" cy="70" rx="16" ry="23" fill="#fff" stroke="#161616" stroke-width="5"/>
+          <ellipse cx="358" cy="74" rx="19" ry="26" fill="#fff" stroke="#161616" stroke-width="5"/>
+          <ellipse cx="338" cy="76" rx="7" ry="11" fill="#161616"/>
+          <ellipse cx="368" cy="80" rx="8" ry="12" fill="#161616"/>
+          <circle cx="341" cy="71" r="2.8" fill="#fff"/>
+          <circle cx="371" cy="74" r="3.2" fill="#fff"/>
+        </g>
+        <path d="M318 40 Q330 32 344 40" fill="none" stroke="#161616" stroke-width="6" stroke-linecap="round"/>
+        <path d="M346 42 Q360 32 376 42" fill="none" stroke="#161616" stroke-width="6" stroke-linecap="round"/>
+      </g>
+    </symbol>
+    <symbol id="board" viewBox="0 230 520 70">
+      <path d="M12 270 C14 256 50 252 140 252 L400 252 C450 252 488 246 512 232 C508 256 486 280 410 284 L140 286 C56 286 12 284 12 270 Z" fill="#FFD23F" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M40 266 C140 264 320 264 410 262 C450 261 482 254 500 244" fill="none" stroke="#F2542D" stroke-width="10" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="rider" viewBox="0 -10 520 300">
+      <use href="#dog" x="10" y="-26" width="440" height="300"/>
+      <use href="#board" x="0" y="230" width="520" height="70"/>
+    </symbol>
+    <symbol id="person" viewBox="0 0 140 260">
+      <g fill="none" stroke-linecap="round">
+        <path d="M58 150 L40 250" stroke="#161616" stroke-width="26"/><path d="M58 150 L40 250" stroke="#2F80ED" stroke-width="14"/>
+        <path d="M82 150 L104 250" stroke="#161616" stroke-width="26"/><path d="M82 150 L104 250" stroke="#2F80ED" stroke-width="14"/>
+        <path d="M56 84 L12 118" stroke="#161616" stroke-width="22"/><path d="M56 84 L12 118" stroke="#F1C7A1" stroke-width="10"/>
+        <path d="M84 84 L128 66" stroke="#161616" stroke-width="22"/><path d="M84 84 L128 66" stroke="#F1C7A1" stroke-width="10"/>
+      </g>
+      <rect x="46" y="56" width="48" height="106" rx="20" fill="#F2542D" stroke="#161616" stroke-width="6"/>
+      <circle cx="72" cy="32" r="24" fill="#F1C7A1" stroke="#161616" stroke-width="6"/>
+    </symbol>
+    <path id="cloudShape" d="M20 80 C-4 80 -6 52 18 46 C16 22 46 8 68 22 C80 -2 124 -4 138 20 C160 6 196 18 192 46 C216 50 214 80 190 80 Z"/>
+  </defs>
+</svg>
+
+<div id="viewport">
+<div id="stage">
+
+  <svg id="clouds" viewBox="0 0 1920 1080" aria-hidden="true">
+    <g class="cloud" style="animation-delay:-20s"><use href="#cloudShape" transform="translate(0 46)"/></g>
+    <g class="cloud" style="animation-duration:70s;animation-delay:-52s"><use href="#cloudShape" transform="translate(0 150) scale(.7)"/></g>
+    <g class="cloud" style="animation-duration:120s;animation-delay:-95s"><use href="#cloudShape" transform="translate(0 70) scale(.85)"/></g>
+    <g class="gullx"><g class="gull"><path d="M0 0 q14 -14 28 0 q14 -14 28 0"/></g></g>
+    <g class="gullx" style="animation-delay:-9s;animation-duration:34s"><g class="gull" style="animation-delay:-2s"><path d="M0 0 q10 -10 20 0 q10 -10 20 0"/></g></g>
+  </svg>
+
+  <!-- 1 -->
+  <section class="slide" data-title="Hang ten on four paws">
+    <div class="title-text">
+      <p class="kicker a">The sport of dog surfing</p>
+      <h1>Hang ten<br>on four paws</h1>
+      <p class="sub a" style="--d:.55s">What it is, how dogs learn, and how to keep them safe</p>
+      <ul class="chips a" style="--d:.7s"><li>History</li><li>Gear</li><li>Training</li><li>Competition</li><li>Safety</li></ul>
+    </div>
+    <svg class="title-art scene" viewBox="0 0 1000 820" aria-hidden="true">
+      <g class="rays">
+        <path d="M958.0 120.0 L986.0 120.0 M946.2 164.0 L970.5 178.0 M914.0 196.2 L928.0 220.5 M870.0 208.0 L870.0 236.0 M826.0 196.2 L812.0 220.5 M793.8 164.0 L769.5 178.0 M782.0 120.0 L754.0 120.0 M793.8 76.0 L769.5 62.0 M826.0 43.8 L812.0 19.5 M870.0 32.0 L870.0 4.0 M914.0 43.8 L928.0 19.5 M946.2 76.0 L970.5 62.0" fill="none" stroke="#161616" stroke-width="18" stroke-linecap="round"/>
+        <path d="M958.0 120.0 L986.0 120.0 M946.2 164.0 L970.5 178.0 M914.0 196.2 L928.0 220.5 M870.0 208.0 L870.0 236.0 M826.0 196.2 L812.0 220.5 M793.8 164.0 L769.5 178.0 M782.0 120.0 L754.0 120.0 M793.8 76.0 L769.5 62.0 M826.0 43.8 L812.0 19.5 M870.0 32.0 L870.0 4.0 M914.0 43.8 L928.0 19.5 M946.2 76.0 L970.5 62.0" fill="none" stroke="#FFD23F" stroke-width="8" stroke-linecap="round"/>
+      </g>
+      <circle cx="870" cy="120" r="70" fill="#FFD23F" stroke="#161616" stroke-width="7"/>
+      <g class="sun-eyes"><circle cx="848" cy="110" r="7" fill="#161616"/><circle cx="892" cy="110" r="7" fill="#161616"/></g>
+      <path d="M842 134 Q870 158 898 134" fill="none" stroke="#161616" stroke-width="6" stroke-linecap="round"/>
+      <g class="gull"><path d="M400 150 q14 -14 28 0 q14 -14 28 0"/></g>
+      <g class="gull" style="animation-delay:-4s"><path d="M474 104 q10 -10 20 0 q10 -10 20 0"/></g>
+      <g transform="translate(1000 0) scale(-1 1)">
+        <path d="M0 820 L0 300 C40 230 120 172 230 168 C310 166 370 200 390 248 C400 276 384 300 360 300 C342 300 334 286 340 274 C330 300 330 340 360 380 C430 520 620 640 1000 700 C1150 724 1300 760 1500 790 L1500 820 Z" fill="url(#waveGradC)"/>
+        <path d="M340 274 C330 300 330 340 360 380 C352 344 352 314 366 300 C352 302 342 290 340 274 Z" fill="#164C9E"/>
+        <path d="M0 300 C40 230 120 172 230 168 C310 166 370 200 390 248 C400 276 384 300 360 300 C342 300 334 286 340 274 C330 300 330 340 360 380 C430 520 620 640 1000 700 C1150 724 1300 760 1500 790" fill="none" stroke="#161616" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+        <g fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round">
+          <path class="mark" d="M470 476 q30 18 60 22"/>
+          <path class="mark" d="M580 574 q34 16 70 18" style="animation-delay:-.5s"/>
+          <path class="mark" d="M760 650 q30 10 64 10" style="animation-delay:-1s"/>
+          <path class="mark" d="M420 580 q24 20 52 28" style="animation-delay:-.7s"/>
+          <path class="mark" d="M200 300 q20 30 30 64" style="animation-delay:-.2s"/>
+        </g>
+        <g fill="#FFFFFF" stroke="#161616" stroke-width="5">
+          <circle class="foam" cx="120" cy="196" r="20"/>
+          <circle class="foam" cx="170" cy="176" r="24" style="animation-delay:-.3s"/>
+          <circle class="foam" cx="226" cy="164" r="26" style="animation-delay:-.6s"/>
+          <circle class="foam" cx="284" cy="170" r="24" style="animation-delay:-.15s"/>
+          <circle class="foam" cx="338" cy="190" r="22" style="animation-delay:-.45s"/>
+          <circle class="foam" cx="376" cy="228" r="20" style="animation-delay:-.75s"/>
+          <circle class="foam" cx="382" cy="268" r="16" style="animation-delay:-.25s"/>
+          <circle class="foam" cx="364" cy="296" r="13" style="animation-delay:-.55s"/>
+        </g>
+        <g transform="translate(90 240)"><g class="fish-o"><g class="fish">
+          <path d="M-20 0 L-46 -16 L-42 0 L-46 16 Z" fill="#FF9F1C" stroke="#161616" stroke-width="5" stroke-linejoin="round"/>
+          <ellipse rx="28" ry="16" fill="#FF9F1C" stroke="#161616" stroke-width="5"/>
+          <path d="M-4 -14 Q4 -26 14 -14" fill="#FF9F1C" stroke="#161616" stroke-width="4" stroke-linejoin="round"/>
+          <circle cx="13" cy="-4" r="4.5" fill="#161616"/>
+        </g></g></g>
+        <g transform="translate(645 608) rotate(21)">
+          <g transform="translate(-70 -70) rotate(-21) scale(-1 1)"><g class="splash">
+            <polygon points="0.0,-120.0 30.1,-81.1 84.6,-108.1 84.3,-65.0 152.5,-74.8 121.8,-36.1 190.1,-26.7 135.2,0.0 190.1,26.7 121.8,36.1 152.5,74.8 84.3,65.0 84.6,108.1 30.1,81.1 0.0,120.0 -30.1,81.1 -84.6,108.1 -84.3,65.0 -152.5,74.8 -121.8,36.1 -190.1,26.7 -135.2,0.0 -190.1,-26.7 -121.8,-36.1 -152.5,-74.8 -84.3,-65.0 -84.6,-108.1 -30.1,-81.1" fill="#FFFFFF" stroke="#161616" stroke-width="7" stroke-linejoin="round"/>
+            <text x="0" y="20" text-anchor="middle" font-size="60" font-family="Arial Rounded MT Bold, Arial Black, sans-serif" fill="#2F80ED" stroke="#161616" stroke-width="10" stroke-linejoin="round" paint-order="stroke">SPLASH!</text>
+          </g></g>
+          <g transform="translate(-235.8 -257.4) scale(.9)">
+            <g class="air">
+              <g class="trail">
+                <path d="M30 284 C-80 286 -200 270 -330 232 L-330 248 C-200 284 -80 298 30 296 Z" fill="#FFFFFF" stroke="#161616" stroke-width="5" stroke-linejoin="round"/>
+                <path class="spray-sheet" d="M44 270 C2 242 -24 192 -16 140 C4 190 26 234 64 258 Z" fill="#FFFFFF" stroke="#161616" stroke-width="5" stroke-linejoin="round"/>
+                <g fill="#FFFFFF" stroke="#161616" stroke-width="4">
+                  <circle class="drop" cx="24" cy="250" r="12" style="--dx:-110px;--dy:-130px"/>
+                  <circle class="drop" cx="30" cy="258" r="9" style="--dx:-150px;--dy:-80px;animation-delay:-.25s"/>
+                  <circle class="drop" cx="18" cy="244" r="14" style="--dx:-70px;--dy:-170px;animation-delay:-.5s"/>
+                  <circle class="drop" cx="36" cy="262" r="8" style="--dx:-180px;--dy:-40px;animation-delay:-.75s"/>
+                  <circle class="drop" cx="22" cy="252" r="10" style="--dx:-40px;--dy:-200px;animation-delay:-.9s"/>
+                </g>
+                <g class="speed" fill="none" stroke="#161616" stroke-width="7" stroke-linecap="round">
+                  <path d="M-10 110 H-150"/><path d="M10 160 H-110" style="animation-delay:-.25s"/><path d="M-20 205 H-130" style="animation-delay:-.5s"/>
+                </g>
+              </g>
+              <g class="squash">
+                <svg class="dog-live" x="10" y="-26" width="440" height="300" viewBox="0 0 440 300" overflow="visible"></svg>
+                <use href="#board" x="0" y="230" width="520" height="70"/>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(-330 -470) rotate(-21) scale(-1 1)"><g class="whee">
+            <path d="M-120 0 C-120 -70 120 -70 120 0 C120 40 70 56 30 58 L10 104 L-12 58 C-60 56 -120 44 -120 0 Z" fill="#FFFFFF" stroke="#161616" stroke-width="7" stroke-linejoin="round"/>
+            <text x="0" y="18" text-anchor="middle" font-size="58" font-family="Arial Rounded MT Bold, Arial Black, sans-serif" fill="#F2542D" stroke="#161616" stroke-width="10" stroke-linejoin="round" paint-order="stroke">WHEE!</text>
+          </g></g>
+        </g>
+      </g>
+    </svg>
+    <aside class="notes" data-time="0:00–0:40"><ul>
+      <li>Open on the image: a wave rolls in, and the rider on the board has four paws and a life jacket.</li>
+      <li>Dog surfing is a real sport, with gear, training, judges and a growing community.</li>
+      <li>Roadmap: what it is, where it came from, which dogs surf, the kit, how dogs learn, how contests work, and how to keep dogs safe.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide" data-title="Dogs riding waves. Really.">
+    <p class="kicker a">01 · What it is</p>
+    <h2>Dogs riding waves. Really.</h2>
+    <div class="modes">
+      <figure class="mode card f">
+        <svg viewBox="0 0 460 250" aria-hidden="true"><g transform="translate(0 238)"><path class="cardwave" d="M-60 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 V40 H-60 Z" fill="#8FD3FE" stroke="#161616" stroke-width="4" stroke-linejoin="round"/></g><g class="bob"><use href="#rider" x="20" y="25" width="420" height="220"/></g></svg>
+        <figcaption><b>Solo</b>The dog rides alone, pushed into the wave</figcaption>
+      </figure>
+      <figure class="mode card f">
+        <svg viewBox="0 0 460 250" aria-hidden="true"><g transform="translate(0 224)"><path class="cardwave" d="M-60 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 V40 H-60 Z" fill="#8FD3FE" stroke="#161616" stroke-width="4" stroke-linejoin="round"/></g><g class="bob">
+          <use href="#person" x="60" y="20" width="102" height="190"/>
+          <use href="#dog" x="230" y="103" width="161" height="105"/>
+          <use href="#board" x="10" y="180" width="440" height="60"/>
+        </g></svg>
+        <figcaption><b>Tandem</b>Dog and human share one board</figcaption>
+      </figure>
+      <figure class="mode card f">
+        <svg viewBox="0 0 460 250" aria-hidden="true"><g transform="translate(0 224)"><path class="cardwave" d="M-60 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 V40 H-60 Z" fill="#8FD3FE" stroke="#161616" stroke-width="4" stroke-linejoin="round"/></g><g class="bob">
+          <use href="#dog" x="14" y="116" width="140" height="92"/>
+          <use href="#dog" x="158" y="124" width="128" height="84"/>
+          <use href="#dog" x="290" y="112" width="146" height="96"/>
+          <use href="#board" x="10" y="180" width="440" height="60"/>
+        </g></svg>
+        <figcaption><b>Group</b>Several dogs ride one board together</figcaption>
+      </figure>
+    </div>
+    <p class="tagline f">Ridden for fun, for charity and in competition</p>
+    <aside class="notes" data-time="0:40–1:35"><ul>
+      <li>Simple definition: a dog rides a surfboard on a breaking wave, usually in small surf close to shore.</li>
+      <li>Solo: the dog rides alone. A handler in the water lines the board up and pushes it into the wave.</li>
+      <li>Tandem: dog and human share one board.</li>
+      <li>Group: several dogs on one board, sometimes with a person too.</li>
+      <li>Most dog surfing is just fun at the beach. Organised events are often charity fundraisers, and some are serious competitions.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide" data-title="Older than you'd think">
+    <p class="kicker a">02 · Origins</p>
+    <h2>Older than you’d think</h2>
+    <div class="timeline">
+      <div class="tl-line"></div>
+      <div class="runner" aria-hidden="true"><div class="hy"><div class="hj"><svg class="dog-live" viewBox="0 0 440 300" width="150" height="102"></svg></div></div></div>
+      <div class="f"><span class="tl-dot"></span><p class="tl-year"><span class="vf">Early 1900s</span></p><p class="tl-text">Beach photos show dogs riding boards with their owners</p></div>
+      <div class="f"><span class="tl-dot"></span><p class="tl-year"><span class="vf">2000s</span></p><p class="tl-text">Southern California charity contests make it an event</p></div>
+      <div class="f"><span class="tl-dot"></span><p class="tl-year"><span class="vf">Today</span></p><p class="tl-text">Contests and clubs in many surfing countries</p></div>
+    </div>
+    <aside class="notes" data-time="1:35–2:35"><ul>
+      <li>Dogs have been on surfboards for about as long as surfing has been popular in the US. Early beach photos show dogs riding with their owners.</li>
+      <li class="vf">⚑ Verify: photos from 1920s–30s Hawaii and California are often cited. Confirm a source before giving dates or names.</li>
+      <li>In the 2000s, Southern California charity contests turned it into an organised event.</li>
+      <li class="vf">⚑ Verify: Helen Woodward Animal Center's Surf Dog Surf-A-Thon in Del Mar is usually dated to 2006.</li>
+      <li>Today there are dog surfing events in the US, Australia, Brazil, the UK and elsewhere.</li>
+      <li class="vf">⚑ Verify: which countries and events are currently running.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide" data-title="Any dog that loves water">
+    <p class="kicker a">03 · The surfers</p>
+    <h2>Any dog that loves water</h2>
+    <div class="cols" style="grid-template-columns:1fr 680px">
+      <ul class="pts">
+        <li class="f">Any size can surf</li>
+        <li class="f">Stocky builds balance well</li>
+        <li class="f">Must swim with confidence</li>
+        <li class="f">Flat faces need extra care</li>
+      </ul>
+      <div class="scale a" style="--d:.5s">
+        <svg viewBox="0 0 940 320" aria-hidden="true"><g transform="translate(0 244)"><path class="scalewave" d="M-60 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 q15 -10 30 0 t30 0 V40 H-60 Z" fill="#8FD3FE" stroke="#161616" stroke-width="4" stroke-linejoin="round"/></g>
+          <use href="#rider" x="0" y="180" width="134" height="70"/>
+          <use href="#rider" x="154" y="153" width="185" height="97"/>
+          <use href="#rider" x="359" y="122" width="244" height="128"/>
+          <use href="#rider" x="623" y="87" width="311" height="163"/>
+          <g font-size="38" fill="#161616" text-anchor="middle" font-family="Arial Rounded MT Bold, Arial Black, sans-serif">
+            <text x="67" y="306">S</text><text x="246" y="306">M</text><text x="481" y="306">L</text><text x="778" y="306">XL</text>
+          </g>
+        </svg>
+        <p class="scale-cap"><span class="vf">Contests group dogs by size</span></p>
+      </div>
+    </div>
+    <aside class="notes" data-time="2:35–3:30"><ul>
+      <li>There's no single surfing breed. Small terriers and big retrievers both do it.</li>
+      <li>Low, stocky dogs often find balance easier, which is why bulldogs and corgis are crowd favourites.</li>
+      <li>Non-negotiable: the dog already enjoys water and swims confidently before it ever sees a board.</li>
+      <li>Flat-faced breeds like bulldogs and pugs tire and overheat faster and are weaker swimmers. Life jacket always, sessions short.</li>
+      <li>Contests usually split dogs into size classes so small dogs aren't judged against giants.</li>
+      <li class="vf">⚑ Verify: size bands and weight cut-offs differ between events.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide" data-title="The kit">
+    <p class="kicker a">04 · Gear</p>
+    <h2>The kit</h2>
+    <div class="gear">
+      <div class="card f">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <path d="M28 32 Q60 18 92 32 L98 98 Q60 112 22 98 Z" fill="#F2542D" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M26 64 Q60 70 94 64" fill="none" stroke="#161616" stroke-width="14" stroke-linecap="round"/>
+          <path d="M26 64 Q60 70 94 64" fill="none" stroke="#FFD23F" stroke-width="6" stroke-linecap="round"/>
+          <path d="M44 30 Q60 4 76 30" fill="none" stroke="#161616" stroke-width="9" stroke-linecap="round"/>
+        </svg>
+        <div><b>Dog life jacket</b><span>With a grab handle on the back</span></div>
+      </div>
+      <div class="card f">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <g transform="rotate(35 60 60)">
+            <path d="M60 4 Q88 30 86 64 Q84 102 60 117 Q36 102 34 64 Q32 30 60 4 Z" fill="#FFD23F" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M60 18 V104" stroke="#F2542D" stroke-width="8" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <div><b>Soft-top board</b><span>Wide, stable, with a grippy deck</span></div>
+      </div>
+      <div class="card f">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <path d="M60 8 C60 8 24 54 24 78 A36 36 0 0 0 96 78 C96 54 60 8 60 8 Z" fill="#4FA3F7" stroke="#161616" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M42 80 Q42 96 56 100" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+        <div><b>Fresh water &amp; shade</b><span>So the dog isn’t drinking the sea</span></div>
+      </div>
+      <div class="card f">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <g stroke-linecap="round">
+            <g stroke="#161616" stroke-width="14"><path d="M60 8 V20"/><path d="M60 100 V112"/><path d="M8 60 H20"/><path d="M100 60 H112"/><path d="M23 23 L31 31"/><path d="M89 89 L97 97"/><path d="M97 23 L89 31"/><path d="M31 89 L23 97"/></g>
+            <g stroke="#FFD23F" stroke-width="5"><path d="M60 8 V20"/><path d="M60 100 V112"/><path d="M8 60 H20"/><path d="M100 60 H112"/><path d="M23 23 L31 31"/><path d="M89 89 L97 97"/><path d="M97 23 L89 31"/><path d="M31 89 L23 97"/></g>
+          </g>
+          <circle cx="60" cy="60" r="28" fill="#FFD23F" stroke="#161616" stroke-width="6"/>
+          <circle cx="51" cy="55" r="3.5" fill="#161616"/><circle cx="69" cy="55" r="3.5" fill="#161616"/>
+          <path d="M49 66 Q60 76 71 66" fill="none" stroke="#161616" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div><b>Dog-safe sunscreen</b><span>For pale noses and thin coats</span></div>
+      </div>
+    </div>
+    <aside class="notes" data-time="3:30–4:25"><ul>
+      <li>Life jacket: made for dogs, brightly coloured, with a grab handle on the back so you can lift the dog out of the water fast.</li>
+      <li>Board: big, wide soft-top boards are stable and forgiving when the dog falls. Paws need grip, so a traction pad or non-slip deck helps.</li>
+      <li>Fresh water and shade: dogs swallow seawater while surfing, and too much salt water can make them ill. Offer fresh water often and rest in the shade.</li>
+      <li>Sunscreen: pink noses and thin coats burn. Use a dog-safe product; not every human sunscreen is safe if licked.</li>
+      <li class="vf">⚑ Verify: sunscreen guidance with a vet before recommending a product.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide" data-title="Sand first, surf later">
+    <p class="kicker a">05 · Training</p>
+    <h2>Sand first, surf later</h2>
+    <div class="ladder">
+      <div class="step f"><p class="n">1</p><p>Jacket on at home</p></div>
+      <div class="step f"><p class="n">2</p><p>Board on grass or sand</p></div>
+      <div class="step f"><p class="n">3</p><p>Calm, shallow water</p></div>
+      <div class="step f"><p class="n">4</p><p>Tiny waves, with a catcher</p></div>
+      <div class="step f"><p class="n">5</p><p>Grow at the dog’s pace</p></div>
+      <div class="hopper" aria-hidden="true"><div class="hy"><div class="hj"><div class="hb"><svg class="dog-live" viewBox="0 0 440 300" width="150" height="102"></svg></div></div></div></div>
+    </div>
+    <aside class="notes" data-time="4:25–5:30"><ul>
+      <li>Dogs learn this the way they learn anything: tiny steps, lots of rewards, short sessions.</li>
+      <li>1. Life jacket on at home, with treats, until the dog stops noticing it.</li>
+      <li>2. Board on grass or sand: reward stepping on, then standing, then staying while you gently rock it.</li>
+      <li>3. Calm, shallow water: you hold the board steady while the dog stands.</li>
+      <li>4. Tiny whitewater: the handler pushes the board into a small wave, and a catcher waits near the shore.</li>
+      <li>5. Move on only when the dog chooses to climb back on. If it hesitates or jumps off, go back a step. End on a good ride.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide" data-title="Judged on the ride">
+    <p class="kicker a">06 · Competition</p>
+    <h2>Judged on the ride</h2>
+    <div class="cols" style="grid-template-columns:1fr 600px;margin-top:0">
+      <div>
+        <p class="lead a" style="--d:.5s"><span class="vf">Judges typically look at</span></p>
+        <ul class="pts">
+          <li class="f">Confidence on the board</li>
+          <li class="f">Length of the ride</li>
+          <li class="f">Size of the wave</li>
+          <li class="f">Style, and the odd trick</li>
+        </ul>
+      </div>
+      <div class="divs card f">
+        <h3><span class="vf">Divisions</span></h3>
+        <span>By dog size</span>
+        <span>Tandem</span>
+        <span>Multi-dog</span>
+      </div>
+    </div>
+    <aside class="notes" data-time="5:30–6:30"><ul>
+      <li>Contests usually run in short heats. Each dog gets a set time to catch waves, and the best rides count.</li>
+      <li>Judges commonly look at confidence, ride length and wave size. Style and tricks win the crowd.</li>
+      <li>Divisions are typically by dog size, plus tandem (dog and human) and multi-dog classes.</li>
+      <li class="vf">⚑ Verify: heat format, criteria and scoring vary by event.</li>
+      <li>Examples: the World Dog Surfing Championships in Pacifica, California, and Surf City Surf Dog in Huntington Beach.</li>
+      <li class="vf">⚑ Verify: current dates, and that each event is still running.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide" data-title="The dog decides">
+    <p class="kicker a">07 · Safety</p>
+    <h2>The dog decides</h2>
+    <div class="signs">
+      <div class="sign card f">
+        <h3>Keep going</h3>
+        <ul><li>Loose, wiggly body</li><li>Climbs back on by itself</li><li>Soft, relaxed face</li></ul>
+      </div>
+      <div class="sign stop card f">
+        <h3>Stop</h3>
+        <ul><li>Tail tucked</li><li>Trying to jump off</li><li>Shaking or wide eyes</li></ul>
+      </div>
+    </div>
+    <div class="rules f"><span>Small waves</span><span>No rips</span><span>Short sessions</span><span>Rinse off after</span></div>
+    <aside class="notes" data-time="6:30–7:25"><ul>
+      <li>The golden rule: the dog has to want this. Never place or hold a reluctant dog on a board.</li>
+      <li>Keep going when you see a loose, wiggly body, a soft face, and the dog climbing back on by itself.</li>
+      <li>Stop when you see a tucked tail, attempts to jump off, shaking, lip licking or the whites of the eyes.</li>
+      <li>Pick small, clean waves. Avoid rip currents and crowded breaks, and watch for cold and heat.</li>
+      <li>Afterwards, rinse off the salt and sand, dry the ears and check the paw pads.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide" data-title="Why it's worth it">
+    <p class="kicker a">08 · Why it matters</p>
+    <h2>Why it’s worth it</h2>
+    <div class="end-text">
+      <ul class="pts">
+        <li class="f">A bond built on trust</li>
+        <li class="f">Exercise and confidence</li>
+        <li class="f"><span class="vf">Events that help animals</span></li>
+      </ul>
+      <p class="finale f">Surf’s up!</p>
+      <div class="confetti" aria-hidden="true"></div>
+    </div>
+    <svg class="end-art scene" viewBox="0 0 1000 820" aria-hidden="true"></svg>
+    <aside class="notes" data-time="7:25–8:00"><ul>
+      <li>It builds trust: the dog learns you'll keep it safe somewhere new and strange.</li>
+      <li>It's exercise and a confidence boost: a new challenge, outdoors, together.</li>
+      <li>It gives back: events raise money for animal welfare, and surf-therapy dogs ride with people with disabilities.</li>
+      <li class="vf">⚑ Verify: Ricochet, a golden retriever from San Diego known as a "SURFice dog", is the best-known example.</li>
+      <li>Close: next time you see a dog in a life jacket paddling out, that's an athlete. Surf's up. Thank you.</li>
+      <li>One more click closes the iris on the dog.</li>
+    </ul></aside>
+  </section>
+
+  <svg id="sea" viewBox="0 0 1920 160" aria-hidden="true"><path id="waveBack"/>
+    <g class="band-rider">
+      <path d="M-280 62 C-200 58 -130 46 -76 30 C-34 17 8 -6 48 -16 C80 -24 106 -18 124 -4 C156 20 214 44 320 58 L320 150 L-280 150 Z" fill="#3D8DF0" stroke="#161616" stroke-width="5" stroke-linejoin="round"/>
+      <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round">
+        <path class="mark" d="M-170 56 q22 -5 44 -14"/><path class="mark" d="M-110 50 q18 -8 32 -19" style="animation-delay:-.6s"/>
+      </g>
+      <path d="M26 -6 C56 -36 104 -40 132 -16 C162 -28 198 -8 206 12 C238 8 270 26 282 44 C304 44 324 54 334 66 L334 100 L18 100 C10 62 12 22 26 -6 Z" fill="#FFFFFF" stroke="#161616" stroke-width="5" stroke-linejoin="round"/>
+      <g fill="#FFFFFF" stroke="#161616" stroke-width="4">
+        <circle class="ww" cx="40" cy="-12" r="16"/>
+        <circle class="ww" cx="78" cy="-32" r="20" style="animation-delay:-.2s"/>
+        <circle class="ww" cx="122" cy="-28" r="18" style="animation-delay:-.4s"/>
+        <circle class="ww" cx="162" cy="-12" r="16" style="animation-delay:-.6s"/>
+        <circle class="ww" cx="202" cy="6" r="15" style="animation-delay:-.3s"/>
+        <circle class="ww" cx="244" cy="24" r="13" style="animation-delay:-.5s"/>
+        <circle class="ww" cx="284" cy="40" r="11" style="animation-delay:-.1s"/>
+        <circle class="drop" cx="80" cy="-46" r="6" style="--dx:40px;--dy:-46px"/>
+        <circle class="drop" cx="118" cy="-44" r="5" style="--dx:56px;--dy:-30px;animation-delay:-.4s"/>
+        <circle class="drop" cx="60" cy="-36" r="5" style="--dx:24px;--dy:-54px;animation-delay:-.75s"/>
+      </g>
+      <g transform="translate(-22 11.6) rotate(-18)"><g class="band-bob">
+        <use href="#rider" x="-85" y="-97.7" width="170" height="98" transform="scale(-1 1)"/>
+        <g fill="#FFFFFF" stroke="#161616" stroke-width="3">
+          <circle class="drop" cx="80" cy="-10" r="6" style="--dx:60px;--dy:-30px"/>
+          <circle class="drop" cx="84" cy="-6" r="4.5" style="--dx:76px;--dy:-8px;animation-delay:-.35s"/>
+        </g>
+      </g></g>
+    </g>
+    <path id="waveFront"/></svg>
+  <div id="progress"></div>
+  <div id="counter"></div>
+  <div id="iris"></div>
+  <div id="theEnd">The End</div>
+</div>
+</div>
+
+<div id="np">
+  <div><div class="lab">Elapsed</div><div id="npClock">0:00</div><div class="lab" style="margin-top:8px">Slide window</div><div id="npWin"></div><div id="npStep" class="lab"></div></div>
+  <div id="npNotes"></div>
+  <div><div class="lab">Next slide</div><div id="npNext"></div></div>
+</div>
+<div id="hint">Click or → to advance · ← back · P presenter view · N notes · F full screen · B blank · M pause motion</div>
+<div id="toast"></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), iris = $('iris');
+  const slides = [...document.querySelectorAll('.slide')];
+  const N = slides.length;
+  const frags = slides.map(s => [...s.querySelectorAll('.f')]);
+  let cur = 0, step = 0, shown = -1, t0 = null, pw = null;
+  let busy = false, ended = false, ex = 960, ey = 540;
+  const OPEN = 4500; // iris diameter that clears every corner of the stage
+
+  // closing slide reuses the title scene; each rider gets a live copy of the dog so its parts can move
+  document.querySelector('.end-art').innerHTML = document.querySelector('.title-art').innerHTML;
+  const dogParts = $('dog').innerHTML;
+  document.querySelectorAll('.dog-live').forEach(el => { el.innerHTML = dogParts; });
+
+  // confetti pieces for "Surf's up!"
+  const conf = document.querySelector('.confetti');
+  const colors = ['#FFD23F', '#F2542D', '#2F80ED', '#8FD3FE', '#2EBD59', '#FF6F91', '#FF9F1C'];
+  for (let i = 0; i < 36; i++) {
+    const p = document.createElement('i'), a = Math.random() * Math.PI * 2, d = 250 + Math.random() * 450;
+    p.style.cssText = `--x:${(Math.cos(a) * d).toFixed(0)}px;--y:${(Math.sin(a) * d * .6 - 120).toFixed(0)}px;--r:${((Math.random() * 2 - 1) * 720).toFixed(0)}deg;--dl:${(Math.random() * .25).toFixed(2)}s;background:${colors[i % colors.length]}`;
+    conf.appendChild(p);
+  }
+
+  // split headlines into letters for the bouncy drop-in
+  document.querySelectorAll('.slide h1, .slide h2, .finale').forEach(h => {
+    let i = 0, html = '';
+    h.childNodes.forEach(n => {
+      if (n.nodeName === 'BR') { html += '<br>'; return; }
+      n.textContent.split(/(\s+)/).forEach(part => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { html += ' '; return; }
+        html += '<span class="w">' + [...part].map(c => `<span class="ch" style="--i:${i++}">${c}</span>`).join('') + '</span>';
+      });
+    });
+    h.innerHTML = html;
+  });
+
+  // scale the 1920x1080 stage to any screen
+  const fit = () => {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  };
+  addEventListener('resize', fit); fit();
+
+  // seamless waves: period-wide overhang, animated by exactly one period
+  const wave = (w, period, amp, base, h) => {
+    let d = `M0 ${base}`;
+    for (let x = 0; x < w; x += period) d += ` q${period / 4} ${-amp} ${period / 2} 0 t${period / 2} 0`;
+    return d + ` V${h + 10} H0 Z`;
+  };
+  $('waveBack').setAttribute('d', wave(1920 + 480, 480, 18, 54, 160));
+  $('waveFront').setAttribute('d', wave(1920 + 640, 640, 14, 88, 160));
+
+  // timing marks
+  const secs = t => { const [m, s] = t.split(':').map(Number); return m * 60 + s; };
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  const win = i => slides[i].querySelector('.notes').dataset.time.split('–');
+
+  // ---------- iris ----------
+  function irisTo(size, ms, ease, x, y, done) {
+    iris.style.transitionDuration = ms + 'ms';
+    iris.style.transitionTimingFunction = ease;
+    iris.style.setProperty('--ix', x + 'px');
+    iris.style.setProperty('--iy', y + 'px');
+    iris.style.setProperty('--is', size + 'px');
+    if (done) setTimeout(done, ms);
+  }
+  const CLOSE_EASE = 'cubic-bezier(.2,.9,.4,1)', OPEN_EASE = 'cubic-bezier(.6,0,.9,.5)';
+
+  function paint() {
+    shown = cur;
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === cur);
+      frags[i].forEach((f, j) => f.classList.toggle('in', i < cur || (i === cur && j < step)));
+      s.style.setProperty('--built', i < cur ? frags[i].length : i === cur ? step : 0);
+    });
+    stage.dataset.slide = cur;
+    slides[cur].querySelectorAll('.hopper, .runner').forEach(el => {
+      el.classList.toggle('on', step > 0);
+      if (el.dataset.at !== String(step)) { el.dataset.at = step; el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop'); }
+    });
+    $('counter').textContent = `${cur + 1} / ${N}`;
+    const total = frags.reduce((n, f) => n + f.length + 1, 0) - 1;
+    const done = frags.slice(0, cur).reduce((n, f) => n + f.length + 1, 0) + step;
+    $('progress').style.width = (done / total * 100) + '%';
+    history.replaceState(null, '', '#' + (cur + 1));
+    updateNotes();
+  }
+  function render() {
+    if (cur === shown || busy) { paint(); return; }
+    busy = true;
+    irisTo(0, 380, CLOSE_EASE, 960, 540, () => {
+      paint();
+      irisTo(OPEN, 560, OPEN_EASE, 960, 540, () => { busy = false; });
+    });
+  }
+
+  function theEnd() {
+    ended = true;
+    document.body.classList.add('ending');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const r = slides[cur].querySelector('.dog-live').getBoundingClientRect();
+      const s = stage.getBoundingClientRect(), k = s.width / 1920;
+      ex = (r.left + r.width / 2 - s.left) / k; ey = (r.top + r.height * .45 - s.top) / k;
+      const te = $('theEnd'); te.style.left = ex + 'px'; te.style.top = Math.max(120, ey - 320) + 'px';
+      irisTo(440, 1000, CLOSE_EASE, ex, ey, () => { if (ended) te.classList.add('show'); });
+    }));
+  }
+  function unEnd() {
+    if (!ended) return false;
+    ended = false;
+    $('theEnd').classList.remove('show');
+    document.body.classList.remove('ending');
+    irisTo(OPEN, 700, OPEN_EASE, ex, ey);
+    return true;
+  }
+
+  function next() {
+    if (t0 === null) t0 = Date.now();
+    if (ended) return;
+    if (step < frags[cur].length) step++;
+    else if (cur < N - 1) { cur++; step = 0; }
+    else { theEnd(); return; }
+    render();
+  }
+  function prev() {
+    if (unEnd()) return;
+    if (step > 0) step--;
+    else if (cur > 0) { cur--; step = frags[cur].length; }
+    render();
+  }
+  function go(i, built) { unEnd(); cur = Math.max(0, Math.min(N - 1, i)); step = built ? frags[cur].length : 0; render(); }
+
+  // ---------- notes: in-page panel (N) and presenter window (P) ----------
+  function noteData() {
+    const s = slides[cur], [a, b] = win(cur);
+    return {
+      head: s.dataset.title,
+      count: `${cur + 1} / ${N}`,
+      win: `${a} – ${b}`,
+      step: frags[cur].length ? `Build ${step} of ${frags[cur].length}` : 'No builds',
+      notes: s.querySelector('.notes').innerHTML,
+      next: cur < N - 1 ? slides[cur + 1].dataset.title : 'End of talk',
+    };
+  }
+  function updateNotes() {
+    const d = noteData();
+    $('npWin').textContent = d.win; $('npStep').textContent = d.step;
+    $('npNotes').innerHTML = d.notes; $('npNext').textContent = d.next;
+    if (pw && !pw.closed) {
+      const q = id => pw.document.getElementById(id);
+      q('pHead').textContent = d.head; q('pCount').textContent = d.count; q('pWin').textContent = d.win;
+      q('pStep').textContent = d.step; q('pNotes').innerHTML = d.notes; q('pNext').textContent = 'Next: ' + d.next;
+    }
+    tick();
+  }
+  function tick() {
+    const el = t0 === null ? 0 : (Date.now() - t0) / 1000;
+    const late = el > secs(win(cur)[1]);
+    [$('npClock'), pw && !pw.closed ? pw.document.getElementById('pClock') : null].forEach(c => {
+      if (!c) return; c.textContent = fmt(el); c.classList.toggle('late', late);
+    });
+  }
+  setInterval(tick, 500);
+
+  const PRESENTER = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Presenter view</title><style>
+*{box-sizing:border-box;margin:0}
+body{height:100vh;display:flex;flex-direction:column;gap:16px;padding:26px 32px;background:#141414;color:#F2F2F2;font:18px/1.45 "Avenir Next",Avenir,"Segoe UI",system-ui,sans-serif}
+header,footer{display:flex;align-items:flex-end;gap:36px}
+header{border-bottom:1px solid #333;padding-bottom:16px}
+footer{align-items:center;gap:10px;border-top:1px solid #333;padding-top:14px}
+.lab{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A9A9A9}
+#pClock{font-size:64px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+#pClock.late{color:#FF8A70}
+.big{font-size:28px;font-weight:600;font-variant-numeric:tabular-nums}
+#pHead{font-size:34px;font-weight:800}
+#pStep{color:#A9A9A9}
+#pNotes{flex:1;overflow:auto;font-size:24px}
+#pNotes ul{padding-left:1.1em}
+#pNotes li{margin-bottom:.6em}
+#pNotes li.vf{color:#FFB199}
+button{font:inherit;background:#2A2A2A;color:#F2F2F2;border:0;border-radius:10px;padding:10px 18px;cursor:pointer}
+button:hover{background:#3A3A3A}
+#pNext{margin-left:auto;color:#CFCFCF}
+</style></head><body>
+<header><div><div class="lab">Elapsed</div><div id="pClock">0:00</div></div>
+<div><div class="lab">Slide window</div><div id="pWin" class="big"></div></div>
+<div><div class="lab">Slide</div><div id="pCount" class="big"></div></div></header>
+<div><div id="pHead"></div><div id="pStep"></div></div>
+<div id="pNotes"></div>
+<footer><button id="bPrev">← Back</button><button id="bNext">Next →</button><button id="bReset">Restart timer</button><div id="pNext"></div></footer>
+</body></html>`;
+
+  function openPresenter() {
+    if (pw && !pw.closed) { pw.focus(); return; }
+    pw = window.open('', 'dogsurf-cartoon-presenter', 'width=980,height=720');
+    if (!pw) { toast('Allow pop-ups for this file to open presenter view'); return; }
+    pw.document.open(); pw.document.write(PRESENTER); pw.document.close();
+    pw.document.addEventListener('keydown', onKey);
+    pw.document.getElementById('bPrev').onclick = prev;
+    pw.document.getElementById('bNext').onclick = next;
+    pw.document.getElementById('bReset').onclick = resetTimer;
+    updateNotes();
+  }
+  function resetTimer() { t0 = Date.now(); tick(); }
+
+  function toast(msg) {
+    const t = $('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 3500);
+  }
+  function toggleFS() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen?.().catch(() => {});
+  }
+
+  // ---------- input ----------
+  function onKey(e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const k = e.key;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(k)) { e.preventDefault(); next(); }
+    else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); prev(); }
+    else if (k === 'Home') go(0);
+    else if (k === 'End') go(N - 1, true);
+    else if (k === 'n' || k === 'N') document.body.classList.toggle('rehearse');
+    else if (k === 'p' || k === 'P') openPresenter();
+    else if (k === 'f' || k === 'F') toggleFS();
+    else if (k === 'b' || k === 'B' || k === '.') document.body.classList.toggle('blank');
+    else if (k === 't' || k === 'T') resetTimer();
+    else if (k === 'm' || k === 'M') document.body.classList.toggle('still');
+    else if (k === 'h' || k === 'H' || k === '?') $('hint').classList.toggle('show');
+  }
+  document.addEventListener('keydown', onKey);
+  $('viewport').addEventListener('click', e => (e.shiftKey ? prev() : next()));
+  let tx = null;
+  $('viewport').addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  $('viewport').addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx; tx = null;
+    if (Math.abs(dx) > 50) { e.preventDefault(); dx < 0 ? next() : prev(); }
+  });
+  addEventListener('beforeunload', () => { if (pw && !pw.closed) pw.close(); });
+
+  // start (respects #slide in the URL, so a reload keeps your place), then iris open
+  const h = parseInt(location.hash.slice(1), 10);
+  cur = Number.isFinite(h) ? Math.max(0, Math.min(N - 1, h - 1)) : 0;
+  paint();
+  setTimeout(() => irisTo(OPEN, 900, OPEN_EASE, 960, 540), 250);
+  $('hint').classList.add('show');
+  setTimeout(() => $('hint').classList.remove('show'), 6000);
+})();
+</script>
+</body>
+</html>
