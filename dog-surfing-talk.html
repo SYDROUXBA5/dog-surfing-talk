@@ -164,6 +164,9 @@ h1{font-size:136px;line-height:.98;font-weight:800;letter-spacing:-.03em;margin-
 .vcredit{padding:32px 36px}
 .vplace{font-size:40px;font-weight:800;line-height:1.15}
 
+.vsound{position:absolute;right:20px;bottom:20px;z-index:3;font-family:inherit;font-weight:700;font-size:26px;line-height:1;background:var(--coral);color:#fff;border:0;border-radius:999px;padding:12px 24px;cursor:pointer}
+.vsound[hidden]{display:none}
+
 /* ---------- presenter aids ---------- */
 body.rehearse .slide .vf::after{content:"⚑";color:var(--coral);font-size:.6em;vertical-align:super;margin-left:6px}
 body.blank #stage::after{content:"";position:absolute;inset:0;background:#000;z-index:50}
@@ -393,7 +396,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
       <div class="f"><span class="tl-dot"></span><p class="tl-year"><span class="vf">2000s</span></p><p class="tl-text">Southern California charity contests make it an event</p></div>
       <div class="f"><span class="tl-dot"></span><p class="tl-year"><span class="vf">Today</span></p><p class="tl-text">Contests and clubs in many surfing countries</p></div>
     </div>
-    <aside class="notes" data-time="2:00–2:55"><ul>
+    <aside class="notes" data-time="2:00–2:50"><ul>
       <li>Dogs have been on surfboards for about as long as surfing has been popular in the US. Early beach photos show dogs riding with their owners.</li>
       <li class="vf">⚑ Verify: photos from 1920s–30s Hawaii and California are often cited. Confirm a source before giving dates or names.</li>
       <li>In the 2000s, Southern California charity contests turned it into an organised event.</li>
@@ -427,7 +430,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
         <p class="scale-cap"><span class="vf">Contests group dogs by size</span></p>
       </div>
     </div>
-    <aside class="notes" data-time="2:55–3:45"><ul>
+    <aside class="notes" data-time="2:50–3:35"><ul>
       <li>There's no single surfing breed. Small terriers and big retrievers both do it.</li>
       <li>Low, stocky dogs often find balance easier, which is why bulldogs and corgis are crowd favourites.</li>
       <li>Non-negotiable: the dog already enjoys water and swims confidently before it ever sees a board.</li>
@@ -477,7 +480,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
         <div><b>Dog-safe sunscreen</b><span>For pale noses and thin coats</span></div>
       </div>
     </div>
-    <aside class="notes" data-time="3:45–4:35"><ul>
+    <aside class="notes" data-time="3:35–4:20"><ul>
       <li>Life jacket: made for dogs, brightly coloured, with a grab handle on the back so you can lift the dog out of the water fast.</li>
       <li>Board: big, wide soft-top boards are stable and forgiving when the dog falls. Paws need grip, so a traction pad or non-slip deck helps.</li>
       <li>Fresh water and shade: dogs swallow seawater while surfing, and too much salt water can make them ill. Offer fresh water often and rest in the shade.</li>
@@ -497,7 +500,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
       <div class="step card f"><p class="n">4</p><p>Tiny waves, with a catcher</p></div>
       <div class="step card f"><p class="n">5</p><p>Grow at the dog’s pace</p></div>
     </div>
-    <aside class="notes" data-time="4:35–5:40"><ul>
+    <aside class="notes" data-time="4:20–5:20"><ul>
       <li>Dogs learn this the way they learn anything: tiny steps, lots of rewards, short sessions.</li>
       <li>1. Life jacket on at home, with treats, until the dog stops noticing it.</li>
       <li>2. Board on grass or sand: reward stepping on, then standing, then staying while you gently rock it.</li>
@@ -528,13 +531,39 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
         <span>Multi-dog</span>
       </div>
     </div>
-    <aside class="notes" data-time="5:40–6:35"><ul>
+    <aside class="notes" data-time="5:20–6:10"><ul>
       <li>Contests usually run in short heats. Each dog gets a set time to catch waves, and the best rides count.</li>
       <li>Judges commonly look at confidence, ride length and wave size. Style and tricks win the crowd.</li>
       <li>Divisions are typically by dog size, plus tandem (dog and human) and multi-dog classes.</li>
       <li class="vf">⚑ Verify: heat format, criteria and scoring vary by event.</li>
       <li>Examples: the World Dog Surfing Championships in Pacifica, California, and Surf City Surf Dog in Huntington Beach.</li>
       <li class="vf">⚑ Verify: Surf City Surf Dog's current dates. (Pacifica's World Dog Surfing Championships ran in 2026, its 10th year, per the Guardian clip.)</li>
+    </ul></aside>
+  </section>
+
+  <!-- 7b · video -->
+  <section class="slide video-slide" data-title="Meet the winners">
+    <p class="kicker a">Watch it</p>
+    <h2 class="a" style="--d:.08s">Meet the winners</h2>
+    <div class="vrow">
+      <div class="vcredit card a" style="--d:.45s">
+        <p class="vplace">Rosie</p>
+        <p class="vwhere">Overall champion · owner Steve Drottar</p>
+        <p class="vplace" style="margin-top:26px">Iza</p>
+        <p class="vwhere">Runner-up · owner David Fasoli</p>
+        <p class="vsrc">Pacifica, California · 2026<br>Footage: Reuters, via Guardian News</p>
+      </div>
+      <div class="vframe a" style="--d:.25s">
+        <div class="vbox"><video src="video/dog-surfing-winners-30s.mp4" playsinline preload="auto"></video><button class="vsound" type="button" hidden>Tap for sound</button></div>
+      </div>
+    </div>
+    <aside class="notes" data-time="6:10–6:40"><ul>
+      <li>Let this one play with its sound: 30 seconds of the two winning owners talking.</li>
+      <li>Iza's owner (runner-up): beach first, then a surfboard in the pool to learn balance, then he put the two together. It's their fifth year.</li>
+      <li>Rosie's owner (overall champion): surfing is nature, solitude and excitement, "and then you mix in your best friend."</li>
+      <li>Callback: Iza's path is the training ladder from earlier. Water first, board somewhere calm, then waves.</li>
+      <li>No sound? Click "Tap for sound" on the video.</li>
+      <li>Back in after the clip: "Of course, none of this works unless the dog wants to be there."</li>
     </ul></aside>
   </section>
 
@@ -553,7 +582,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
       </div>
     </div>
     <div class="rules f"><span>Small waves</span><span>No rips</span><span>Short sessions</span><span>Rinse off after</span></div>
-    <aside class="notes" data-time="6:35–7:25"><ul>
+    <aside class="notes" data-time="6:40–7:25"><ul>
       <li>The golden rule: the dog has to want this. Never place or hold a reluctant dog on a board.</li>
       <li>Keep going when you see a loose, wiggly body, a soft face, and the dog climbing back on by itself.</li>
       <li>Stop when you see a tucked tail, attempts to jump off, shaking, lip licking or the whites of the eyes.</li>
@@ -666,10 +695,20 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
   function syncVideo() {
     document.querySelectorAll('.video-slide video').forEach(v => {
       const on = v.closest('.slide').classList.contains('active');
-      if (on && !v.dataset.on) { v.dataset.on = '1'; v.currentTime = 0; v.play().catch(() => {}); }
-      else if (!on && v.dataset.on) { delete v.dataset.on; v.pause(); v.currentTime = 0; }
+      const btn = v.parentNode.querySelector('.vsound');
+      if (on && !v.dataset.on) {
+        v.dataset.on = '1'; v.currentTime = 0;
+        if (btn) v.muted = false;
+        // a browser that blocks sound starts the clip muted and shows the "Tap for sound" button
+        v.play().catch(() => { v.muted = true; v.play().catch(() => {}); if (btn) btn.hidden = false; });
+      } else if (!on && v.dataset.on) { delete v.dataset.on; v.pause(); v.currentTime = 0; if (btn) btn.hidden = true; }
     });
   }
+  document.querySelectorAll('.vsound').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation();
+    const v = b.parentNode.querySelector('video');
+    v.muted = false; v.play().catch(() => {}); b.hidden = true;
+  }));
 
   // ---------- notes: in-page panel (N) and presenter window (P) ----------
   function noteData() {
