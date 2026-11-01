@@ -157,18 +157,12 @@ h1{font-size:136px;line-height:.98;font-weight:800;letter-spacing:-.03em;margin-
 .vrow{display:grid;grid-template-columns:1fr 1000px;gap:44px;align-items:start;margin-top:30px}
 .vframe{position:relative;width:1000px;height:562px;overflow:hidden}
 .vbox{position:absolute;inset:0}
-.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2}
-.vfallback{position:absolute;inset:0;display:grid;place-items:center;text-decoration:none;color:#fff}
-.vfallback img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
-.vfallback span{position:relative}
+.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
 .vwhere{font-size:30px;font-weight:600;color:var(--ink-2);margin-top:10px}
 .vsrc{font-size:26px;font-weight:600;color:var(--ink-2);margin-top:18px}
-.vlink{display:inline-block;margin-top:22px;text-decoration:none}
 .vframe{border-radius:24px;background:var(--ink);box-shadow:0 30px 60px -30px rgba(15,42,58,.55)}
-.vfallback span{font-size:34px;font-weight:700;background:var(--coral);border-radius:999px;padding:14px 30px}
 .vcredit{padding:32px 36px}
 .vplace{font-size:40px;font-weight:800;line-height:1.15}
-.vlink{font-size:28px;font-weight:700;color:#fff;background:var(--sea);border-radius:999px;padding:12px 24px}
 
 /* ---------- presenter aids ---------- */
 body.rehearse .slide .vf::after{content:"⚑";color:var(--coral);font-size:.6em;vertical-align:super;margin-left:6px}
@@ -369,30 +363,22 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
   </section>
 
   <!-- 2b · video -->
-  <section class="slide video-slide" data-title="See it in action" data-yt="tMHFuBVRjmU" data-start="0" data-end="30">
+  <section class="slide video-slide" data-title="See it in action">
     <p class="kicker a">Watch it</p>
     <h2 class="a" style="--d:.08s">See it in action</h2>
     <div class="vrow">
       <div class="vcredit card a" style="--d:.45s">
         <p class="vplace">World Dog Surfing Championships</p>
         <p class="vwhere">Pacifica, California · 2026</p>
-        <p class="vsrc">Video: Guardian News</p>
-        <a class="vlink" href="https://www.youtube.com/watch?v=tMHFuBVRjmU" target="_blank" rel="noopener">Open on YouTube ↗</a>
+        <p class="vsrc">Footage: Reuters, via Guardian News</p>
       </div>
       <div class="vframe a" style="--d:.25s">
-        <div class="vbox">
-          <a class="vfallback" href="https://www.youtube.com/watch?v=tMHFuBVRjmU" target="_blank" rel="noopener">
-            <img src="https://i.ytimg.com/vi/tMHFuBVRjmU/hqdefault.jpg" alt="">
-            <span>▶ Play the clip on YouTube</span>
-          </a>
-        </div>
+        <div class="vbox"><video src="video/dog-surfing-30s.mp4" muted playsinline preload="auto"></video></div>
       </div>
     </div>
     <aside class="notes" data-time="1:30–2:00"><ul>
-      <li>Stop talking and let the clip play: 30 seconds from the 2026 World Dog Surfing Championships in Pacifica, California (Guardian News).</li>
-      <li>It starts by itself when the slide opens. If it doesn't, click the play button in the video.</li>
-      <li>If the arrow keys stop working after you click inside the video, click once outside it.</li>
-      <li>No internet, or opened from your own computer instead of the online link? Use "Open on YouTube".</li>
+      <li>Stop talking and let the clip play: 30 seconds of dogs surfing at the 2026 World Dog Surfing Championships in Pacifica, California (Reuters footage via Guardian News).</li>
+      <li>It starts by itself, plays muted and stops on its last frame. Coming back to this slide replays it.</li>
       <li>Back in after the clip: "That's the sport. So where did it come from?"</li>
     </ul></aside>
   </section>
@@ -676,26 +662,14 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
   function go(i, built) { cur = Math.max(0, Math.min(N - 1, i)); step = built ? frags[cur].length : 0; render(); }
 
 
-  // video slide: load the YouTube clip only while its slide is showing (YouTube only plays inside pages served over http(s); a page opened as a local file keeps the "open on YouTube" card)
+  // video slide: the clip plays from the start each time its slide opens, and stops when you leave
   function syncVideo() {
-    document.querySelectorAll('.video-slide').forEach(s => {
-      const box = s.querySelector('.vbox'), f = box.querySelector('iframe'), on = s.classList.contains('active');
-      if (on && !f && /^https?:$/.test(location.protocol)) {
-        const d = s.dataset, fr = document.createElement('iframe');
-        fr.src = `https://www.youtube-nocookie.com/embed/${d.yt}?start=${d.start}&end=${d.end}&autoplay=1&rel=0&playsinline=1`;
-        fr.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-        fr.referrerPolicy = 'strict-origin-when-cross-origin';
-        fr.title = 'Dog surfing video';
-        box.appendChild(fr);
-      } else if (!on && f) f.remove();
+    document.querySelectorAll('.video-slide video').forEach(v => {
+      const on = v.closest('.slide').classList.contains('active');
+      if (on && !v.dataset.on) { v.dataset.on = '1'; v.currentTime = 0; v.play().catch(() => {}); }
+      else if (!on && v.dataset.on) { delete v.dataset.on; v.pause(); v.currentTime = 0; }
     });
   }
-  // links on the video slide open YouTube instead of advancing the slides
-  document.querySelectorAll('.video-slide a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
-  // after a click inside the video, hand the keyboard back to the slides so the clicker keeps working
-  addEventListener('blur', () => setTimeout(() => {
-    if (document.activeElement && document.activeElement.tagName === 'IFRAME') { window.focus(); document.activeElement.blur(); }
-  }, 400));
 
   // ---------- notes: in-page panel (N) and presenter window (P) ----------
   function noteData() {
