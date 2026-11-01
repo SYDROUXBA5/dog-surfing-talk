@@ -153,6 +153,23 @@ h1{font-size:136px;line-height:.98;font-weight:800;letter-spacing:-.03em;margin-
 .finale{font-size:150px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--coral);margin-top:30px}
 .end-art{position:absolute;right:0;bottom:0;width:1000px}
 
+/* ---------- video slide ---------- */
+.vrow{display:grid;grid-template-columns:1fr 1000px;gap:44px;align-items:start;margin-top:30px}
+.vframe{position:relative;width:1000px;height:562px;overflow:hidden}
+.vbox{position:absolute;inset:0}
+.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2}
+.vfallback{position:absolute;inset:0;display:grid;place-items:center;text-decoration:none;color:#fff}
+.vfallback img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.vfallback span{position:relative}
+.vwhere{font-size:30px;font-weight:600;color:var(--ink-2);margin-top:10px}
+.vsrc{font-size:26px;font-weight:600;color:var(--ink-2);margin-top:18px}
+.vlink{display:inline-block;margin-top:22px;text-decoration:none}
+.vframe{border-radius:24px;background:var(--ink);box-shadow:0 30px 60px -30px rgba(15,42,58,.55)}
+.vfallback span{font-size:34px;font-weight:700;background:var(--coral);border-radius:999px;padding:14px 30px}
+.vcredit{padding:32px 36px}
+.vplace{font-size:40px;font-weight:800;line-height:1.15}
+.vlink{font-size:28px;font-weight:700;color:#fff;background:var(--sea);border-radius:999px;padding:12px 24px}
+
 /* ---------- presenter aids ---------- */
 body.rehearse .slide .vf::after{content:"⚑";color:var(--coral);font-size:.6em;vertical-align:super;margin-left:6px}
 body.blank #stage::after{content:"";position:absolute;inset:0;background:#000;z-index:50}
@@ -342,12 +359,41 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
       </figure>
     </div>
     <p class="tagline f">Ridden for fun, for charity and in competition</p>
-    <aside class="notes" data-time="0:40–1:35"><ul>
+    <aside class="notes" data-time="0:40–1:30"><ul>
       <li>Simple definition: a dog rides a surfboard on a breaking wave, usually in small surf close to shore.</li>
       <li>Solo: the dog rides alone. A handler in the water lines the board up and pushes it into the wave.</li>
       <li>Tandem: dog and human share one board.</li>
       <li>Group: several dogs on one board, sometimes with a person too.</li>
       <li>Most dog surfing is just fun at the beach. Organised events are often charity fundraisers, and some are serious competitions.</li>
+    </ul></aside>
+  </section>
+
+  <!-- 2b · video -->
+  <section class="slide video-slide" data-title="See it in action" data-yt="tMHFuBVRjmU" data-start="0" data-end="30">
+    <p class="kicker a">Watch it</p>
+    <h2 class="a" style="--d:.08s">See it in action</h2>
+    <div class="vrow">
+      <div class="vcredit card a" style="--d:.45s">
+        <p class="vplace">World Dog Surfing Championships</p>
+        <p class="vwhere">Pacifica, California · 2026</p>
+        <p class="vsrc">Video: Guardian News</p>
+        <a class="vlink" href="https://www.youtube.com/watch?v=tMHFuBVRjmU" target="_blank" rel="noopener">Open on YouTube ↗</a>
+      </div>
+      <div class="vframe a" style="--d:.25s">
+        <div class="vbox">
+          <a class="vfallback" href="https://www.youtube.com/watch?v=tMHFuBVRjmU" target="_blank" rel="noopener">
+            <img src="https://i.ytimg.com/vi/tMHFuBVRjmU/hqdefault.jpg" alt="">
+            <span>▶ Play the clip on YouTube</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <aside class="notes" data-time="1:30–2:00"><ul>
+      <li>Stop talking and let the clip play: 30 seconds from the 2026 World Dog Surfing Championships in Pacifica, California (Guardian News).</li>
+      <li>It starts by itself when the slide opens. If it doesn't, click the play button in the video.</li>
+      <li>If the arrow keys stop working after you click inside the video, click once outside it.</li>
+      <li>No internet, or opened from your own computer instead of the online link? Use "Open on YouTube".</li>
+      <li>Back in after the clip: "That's the sport. So where did it come from?"</li>
     </ul></aside>
   </section>
 
@@ -361,7 +407,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
       <div class="f"><span class="tl-dot"></span><p class="tl-year"><span class="vf">2000s</span></p><p class="tl-text">Southern California charity contests make it an event</p></div>
       <div class="f"><span class="tl-dot"></span><p class="tl-year"><span class="vf">Today</span></p><p class="tl-text">Contests and clubs in many surfing countries</p></div>
     </div>
-    <aside class="notes" data-time="1:35–2:35"><ul>
+    <aside class="notes" data-time="2:00–2:55"><ul>
       <li>Dogs have been on surfboards for about as long as surfing has been popular in the US. Early beach photos show dogs riding with their owners.</li>
       <li class="vf">⚑ Verify: photos from 1920s–30s Hawaii and California are often cited. Confirm a source before giving dates or names.</li>
       <li>In the 2000s, Southern California charity contests turned it into an organised event.</li>
@@ -395,7 +441,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
         <p class="scale-cap"><span class="vf">Contests group dogs by size</span></p>
       </div>
     </div>
-    <aside class="notes" data-time="2:35–3:30"><ul>
+    <aside class="notes" data-time="2:55–3:45"><ul>
       <li>There's no single surfing breed. Small terriers and big retrievers both do it.</li>
       <li>Low, stocky dogs often find balance easier, which is why bulldogs and corgis are crowd favourites.</li>
       <li>Non-negotiable: the dog already enjoys water and swims confidently before it ever sees a board.</li>
@@ -445,7 +491,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
         <div><b>Dog-safe sunscreen</b><span>For pale noses and thin coats</span></div>
       </div>
     </div>
-    <aside class="notes" data-time="3:30–4:25"><ul>
+    <aside class="notes" data-time="3:45–4:35"><ul>
       <li>Life jacket: made for dogs, brightly coloured, with a grab handle on the back so you can lift the dog out of the water fast.</li>
       <li>Board: big, wide soft-top boards are stable and forgiving when the dog falls. Paws need grip, so a traction pad or non-slip deck helps.</li>
       <li>Fresh water and shade: dogs swallow seawater while surfing, and too much salt water can make them ill. Offer fresh water often and rest in the shade.</li>
@@ -465,7 +511,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
       <div class="step card f"><p class="n">4</p><p>Tiny waves, with a catcher</p></div>
       <div class="step card f"><p class="n">5</p><p>Grow at the dog’s pace</p></div>
     </div>
-    <aside class="notes" data-time="4:25–5:30"><ul>
+    <aside class="notes" data-time="4:35–5:40"><ul>
       <li>Dogs learn this the way they learn anything: tiny steps, lots of rewards, short sessions.</li>
       <li>1. Life jacket on at home, with treats, until the dog stops noticing it.</li>
       <li>2. Board on grass or sand: reward stepping on, then standing, then staying while you gently rock it.</li>
@@ -496,13 +542,13 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
         <span>Multi-dog</span>
       </div>
     </div>
-    <aside class="notes" data-time="5:30–6:30"><ul>
+    <aside class="notes" data-time="5:40–6:35"><ul>
       <li>Contests usually run in short heats. Each dog gets a set time to catch waves, and the best rides count.</li>
       <li>Judges commonly look at confidence, ride length and wave size. Style and tricks win the crowd.</li>
       <li>Divisions are typically by dog size, plus tandem (dog and human) and multi-dog classes.</li>
       <li class="vf">⚑ Verify: heat format, criteria and scoring vary by event.</li>
       <li>Examples: the World Dog Surfing Championships in Pacifica, California, and Surf City Surf Dog in Huntington Beach.</li>
-      <li class="vf">⚑ Verify: current dates, and that each event is still running.</li>
+      <li class="vf">⚑ Verify: Surf City Surf Dog's current dates. (Pacifica's World Dog Surfing Championships ran in 2026, its 10th year, per the Guardian clip.)</li>
     </ul></aside>
   </section>
 
@@ -521,7 +567,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
       </div>
     </div>
     <div class="rules f"><span>Small waves</span><span>No rips</span><span>Short sessions</span><span>Rinse off after</span></div>
-    <aside class="notes" data-time="6:30–7:25"><ul>
+    <aside class="notes" data-time="6:35–7:25"><ul>
       <li>The golden rule: the dog has to want this. Never place or hold a reluctant dog on a board.</li>
       <li>Keep going when you see a loose, wiggly body, a soft face, and the dog climbing back on by itself.</li>
       <li>Stop when you see a tucked tail, attempts to jump off, shaking, lip licking or the whites of the eyes.</li>
@@ -612,6 +658,7 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
     const done = frags.slice(0, cur).reduce((n, f) => n + f.length + 1, 0) + step;
     $('progress').style.width = (done / total * 100) + '%';
     history.replaceState(null, '', '#' + (cur + 1));
+    syncVideo();
     updateNotes();
   }
 
@@ -627,6 +674,28 @@ body.still *,body.still *::before,body.still *::after{animation-play-state:pause
     render();
   }
   function go(i, built) { cur = Math.max(0, Math.min(N - 1, i)); step = built ? frags[cur].length : 0; render(); }
+
+
+  // video slide: load the YouTube clip only while its slide is showing (YouTube only plays inside pages served over http(s); a page opened as a local file keeps the "open on YouTube" card)
+  function syncVideo() {
+    document.querySelectorAll('.video-slide').forEach(s => {
+      const box = s.querySelector('.vbox'), f = box.querySelector('iframe'), on = s.classList.contains('active');
+      if (on && !f && /^https?:$/.test(location.protocol)) {
+        const d = s.dataset, fr = document.createElement('iframe');
+        fr.src = `https://www.youtube-nocookie.com/embed/${d.yt}?start=${d.start}&end=${d.end}&autoplay=1&rel=0&playsinline=1`;
+        fr.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        fr.referrerPolicy = 'strict-origin-when-cross-origin';
+        fr.title = 'Dog surfing video';
+        box.appendChild(fr);
+      } else if (!on && f) f.remove();
+    });
+  }
+  // links on the video slide open YouTube instead of advancing the slides
+  document.querySelectorAll('.video-slide a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
+  // after a click inside the video, hand the keyboard back to the slides so the clicker keeps working
+  addEventListener('blur', () => setTimeout(() => {
+    if (document.activeElement && document.activeElement.tagName === 'IFRAME') { window.focus(); document.activeElement.blur(); }
+  }, 400));
 
   // ---------- notes: in-page panel (N) and presenter window (P) ----------
   function noteData() {
